@@ -1,0 +1,589 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#100d18">
+  <meta name="description" content="Mission Red Planet - an educational Mars survival simulator for young explorers.">
+  <title>Mission Red Planet | NASA Space Adventure</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <header class="topbar">
+    <a class="brand" href="#">
+      <span class="brand-icon">🚀</span>
+      <span>MISSION<span class="red">CONTROL</span></span>
+    </a>
+    <div class="connection">
+      <span class="live-dot"></span>
+      SIMULATION ONLINE
+    </div>
+  </header>
+
+  <main class="main-container">
+
+    <!-- START SCREEN -->
+    <section id="welcomeScreen" class="welcome-screen">
+      <div class="hero-content">
+        <div class="mission-label">INTERPLANETARY SURVIVAL PROGRAM</div>
+        <h1>MISSION:<br><span>RED PLANET</span></h1>
+        <p class="hero-description">
+          Your crew is stranded on Mars. You are the mission commander.
+          Manage your resources, survive dangerous events and build a
+          successful Martian colony.
+        </p>
+
+        <div class="mission-facts">
+          <div><strong>30</strong><small>MARTIAN DAYS</small></div>
+          <div><strong>4</strong><small>ASTRONAUTS</small></div>
+          <div><strong>1</strong><small>MISSION</small></div>
+        </div>
+
+        <label class="name-label" for="commanderName">
+          COMMANDER NAME
+        </label>
+        <input id="commanderName" maxlength="20"
+          placeholder="Enter your name">
+          <div class="difficulty-selection mission-selection">
+            <h3>🚀 SELECT MISSION</h3>
+            <label class="name-label" for="missionSelect">MISSION OBJECTIVE</label>
+            <select id="missionSelect" aria-describedby="mission-description">
+              <option value="colony" selected>🏠 Mars Colony Survival</option>
+              <option value="rover">🛰️ Rescue the Rover</option>
+              <option value="ice">🧊 Collect Ice Samples</option>
+            </select>
+            <p id="mission-description" aria-live="polite">
+              Main mission: manage your colony and keep the crew alive for 30 Martian sols.
+            </p>
+          </div>
+
+          <div class="difficulty-selection">
+    <h3>🎮 SELECT MISSION DIFFICULTY</h3>
+<select id="difficulty" onchange="selectDifficulty()">
+        <option value="easy">🟢 Easy</option>
+        <option value="normal" selected>🟡 Normal</option>
+        <option value="hard">🔴 Hard</option>
+    </select>
+
+    <p id="difficulty-description">
+        Normal: Balanced resource consumption.
+    </p>
+</div>
+<div class="mission-briefing" id="missionBriefing">
+    <h3>🚀 MISSION BRIEFING</h3>
+
+    <p><strong>Mission:</strong> Establish a surviving Mars colony.</p>
+
+    <p><strong>Duration:</strong> 30 Martian days (Sols).</p>
+
+    <p><strong>Objectives:</strong></p>
+
+    <ul>
+        <li>Keep astronauts healthy.</li>
+        <li>Manage oxygen, water and food.</li>
+        <li>Protect your shelter.</li>
+        <li>Explore Mars and collect research.</li>
+        <li>Survive all 30 Sols.</li>
+    </ul>
+
+    <p>Mission Control is counting on you, Commander!</p>
+</div>
+        <button id="startBtn" class="primary-btn">
+          START MISSION <span>→</span>
+        </button>
+
+        <p class="small-note">NO EXPERIENCE REQUIRED · LEARN THROUGH PLAY</p>
+      </div>
+    </section>
+
+    <!-- GAME SCREEN -->
+    <section id="gameScreen" class="hidden">
+
+      <div class="mission-header">
+        <div>
+          <p class="eyebrow">MARS COLONY · ALPHA BASE</p>
+          <h2>MISSION CONTROL</h2>
+          <p id="commanderDisplay">Commander: Explorer</p>
+          <p id="selectedMissionDisplay" class="eyebrow">Selected mission: Mars Colony Survival</p>
+        </div>
+        <div class="day-display">
+          <span id="dayNumber">SOL 1</span>
+          <small>OF 30 SOLS</small>
+        </div>
+      </div>
+
+      <div class="progress-track">
+        <div id="missionProgress" class="progress-fill"></div>
+      </div>
+
+      <!-- STATUS -->
+      <div class="section-heading">
+        <h3>COLONY STATUS</h3>
+        <span id="missionStatus" class="status-badge">STABLE</span>
+      </div>
+
+      <div class="resource-grid">
+
+        <div class="resource-card">
+          <span class="resource-icon">🫁</span>
+          <span class="resource-name">OXYGEN</span>
+          <strong id="oxygenValue">100</strong>
+          <small>Supply level</small>
+          <div class="mini-track"><div id="oxygenBar"></div></div>
+        </div>
+
+        <div class="resource-card">
+          <span class="resource-icon">💧</span>
+          <span class="resource-name">WATER</span>
+          <strong id="waterValue">100</strong>
+          <small>Supply level</small>
+          <div class="mini-track"><div id="waterBar"></div></div>
+        </div>
+
+        <div class="resource-card">
+          <span class="resource-icon">🌱</span>
+          <span class="resource-name">FOOD</span>
+          <strong id="foodValue">100</strong>
+          <small>Supply level</small>
+          <div class="mini-track"><div id="foodBar"></div></div>
+        </div>
+
+        <div class="resource-card">
+          <span class="resource-icon">⚡</span>
+          <span class="resource-name">ENERGY</span>
+          <strong id="energyValue">100</strong>
+          <small>Power reserve</small>
+          <div class="mini-track"><div id="energyBar"></div></div>
+        </div>
+
+        <div class="resource-card">
+          <span class="resource-icon">🛡️</span>
+          <span class="resource-name">SHIELD</span>
+          <strong id="shieldValue">50</strong>
+          <small>Radiation protection</small>
+          <div class="mini-track"><div id="shieldBar"></div></div>
+        </div>
+
+        <div class="resource-card">
+          <span class="resource-icon">❤️</span>
+          <span class="resource-name">CREW HEALTH</span>
+          <strong id="healthValue">100</strong>
+          <small>Astronaut condition</small>
+          <div class="mini-track"><div id="healthBar"></div></div>
+        </div>
+
+      </div>
+      <div class="crew-report">
+    <h3>👨‍🚀 CREW STATUS REPORT</h3>
+
+    <p id="crew-status">
+        Crew members are healthy and ready for duty.
+    </p>
+
+    <div class="crew-details">
+        <span>❤️ Crew Health</span>
+        <strong id="crew-health-report">100%</strong>
+    </div>
+</div>
+<div class="medical-alert">
+    <h3>🚑 MEDICAL SUPPORT</h3>
+    <p>Keep your astronauts healthy during the Mars mission.</p>
+
+    <button id="medical-support-btn" type="button">
+        ❤️ RESTORE CREW HEALTH
+    </button>
+    <p id="medical-support-status" role="status" aria-live="polite">Medical support is ready when your mission begins.</p>
+</div>
+      <div id="mission-alert" class="mission-alert">
+    <span>🟢</span>
+    <strong>MISSION CONTROL</strong>
+    <p id="alert-message">
+        All systems operating normally. Keep monitoring your colony.
+    </p>
+</div>
+<div class="mission-progress">
+    <div class="progress-heading">
+        <span>🚀 MISSION PROGRESS</span>
+        <span id="progressText">Day 1 / 30</span>
+    </div>
+
+    <div class="progress-track">
+        <div id="progressFill" class="progress-fill"></div>
+    </div>
+</div>
+<div class="mission-statistics">
+    <h3>📊 MISSION STATISTICS</h3>
+
+    <div class="stat-row">
+        <span>🌍 Martian Days Survived</span>
+        <strong id="daysSurvived">0</strong>
+    </div>
+
+    <div class="stat-row">
+        <span>🔬 Research Points</span>
+        <strong id="researchTotal">0</strong>
+    </div>
+
+    <div class="stat-row">
+        <span>🏆 Mission Score</span>
+        <strong id="missionScore">0</strong>
+    </div>
+
+    <div class="stat-row">
+        <span>🗺️ Mars Locations Explored</span>
+        <strong id="locationsExplored">0</strong>
+    </div>
+</div>
+<details class="how-to-play">
+    <summary>📖 HOW TO PLAY</summary>
+
+    <div class="guide-content">
+        <h3>Your Mission</h3>
+        <p>Keep your Mars colony alive for 30 Martian days (sols).</p>
+
+        <h3>Manage Your Resources</h3>
+        <ul>
+            <li>🫁 Oxygen — keep your crew breathing.</li>
+            <li>💧 Water — recycle and conserve water.</li>
+            <li>🌱 Food — grow food for your crew.</li>
+            <li>⚡ Energy — power your colony.</li>
+            <li>🛡️ Shield — protect your crew.</li>
+            <li>❤️ Health — keep astronauts healthy.</li>
+        </ul>
+
+        <h3>Explore Mars</h3>
+        <p>Visit locations, complete challenges, earn research points and learn about the Red Planet.</p>
+
+        <h3>How to Win</h3>
+        <p>Survive all 30 sols while keeping your crew and colony safe.</p>
+    </div>
+</details>
+<details class="mission-tutorial">
+    <summary>📘 COMMANDER'S FIELD GUIDE</summary>
+
+    <h3>🚀 YOUR MISSION OBJECTIVES</h3>
+    <ul>
+        <li>Survive all 30 Martian days.</li>
+        <li>Keep oxygen, water and food above zero.</li>
+        <li>Protect your crew's health.</li>
+        <li>Maintain energy and shelter protection.</li>
+        <li>Explore Mars to earn research points.</li>
+    </ul>
+
+    <h3>🧪 SURVIVAL TIPS</h3>
+    <ul>
+        <li>Check your resources every day.</li>
+        <li>Repair equipment before emergencies become serious.</li>
+        <li>Recycle water and produce oxygen when needed.</li>
+        <li>Use medical support when crew health falls.</li>
+        <li>Choose actions carefully.</li>
+    </ul>
+
+    <p><strong>Remember, Commander:</strong> Every decision matters!</p>
+</details>
+      <!-- MARS VISUAL -->
+      <div class="mars-scene">
+        <div class="mars-overlay">
+          <p class="photo-credit">
+  Mars panorama: NASA/JPL/Cornell
+</p>
+          <span class="scene-label">PLANETARY VIEW</span>
+          <h3>WELCOME TO MARS</h3>
+          <p>Your colony. Your responsibility.</p>
+        </div>
+        <div class="mars-planet"></div>
+        <div class="scene-stars">✦　 ·　 ✧　 ·　 ✦</div>
+      </div>
+      <section class="nasa-panel">
+  <h3>🛰️ NASA SPACE WEATHER MONITOR</h3>
+
+  <p id="nasa-status">Connecting to NASA data...</p>
+
+  <div id="nasa-events">
+    Waiting for solar activity data.
+  </div>
+  <h4>☀️ CORONAL MASS EJECTIONS</h4>
+<div id="nasa-cme-events">
+  Waiting for CME data...
+</div>
+<div id="solar-warning" class="solar-warning">
+  🟢 No solar activity warning checked yet.
+</div>
+<button id="nasa-refresh" class="nasa-refresh-btn">
+  🔄 REFRESH NASA DATA
+</button>
+<button onclick="resetMission()">Reset Mission</button>
+  <small>Source: NASA DONKI</small>
+</section>
+
+      <!-- EVENT -->
+      <div class="section-heading">
+        <h3>MISSION INTELLIGENCE</h3>
+        <span class="warning-label">LIVE SIMULATION</span>
+      </div>
+
+      <div id="eventCard" class="event-card">
+        <div class="event-icon" id="eventIcon">📡</div>
+        <div>
+          <span class="event-type">MISSION UPDATE</span>
+          <h3 id="eventTitle">Welcome, Commander!</h3>
+          <p id="eventText">
+            Your crew has successfully landed on Mars.
+            Prepare your colony for survival.
+          </p>
+        </div>
+      </div>
+      
+<section class="exploration-panel">
+  <h2>🪐 MARS EXPLORATION</h2>
+  <p>Choose a location to explore and discover the Red Planet.</p>
+
+  <div class="exploration-grid">
+    <button class="explore-btn" data-site="Olympus Mons">
+      🏔️ Olympus Mons
+      <small>Explore the giant volcano</small>
+    </button>
+
+    <button class="explore-btn" data-site="Valles Marineris">
+      🏜️ Valles Marineris
+      <small>Investigate the giant canyon</small>
+    </button>
+
+    <button class="explore-btn" data-site="Jezero Crater">
+      💧 Jezero Crater
+      <small>Search for signs of ancient water</small>
+    </button>
+  </div>
+
+<div id="exploration-result">
+  No discoveries yet. Choose a location!
+</div>
+
+<div class="discovery-history">
+  <h3>🏆 YOUR DISCOVERY HISTORY</h3>
+  <p id="discovery-count">Discoveries: 0 / 3</p>
+  <ul id="discovery-list">
+    <li>No discoveries recorded yet.</li>
+  </ul>
+</div>
+</section>
+
+
+<section class="challenge-panel">
+  <h2>🚨 SPECIAL MARS MISSION</h2>
+
+  <h3>Damaged Rover Emergency</h3>
+
+  <p>
+    Your exploration rover has stopped working.
+    The crew must decide what to do.
+  </p>
+
+  <div class="challenge-options">
+    <button class="challenge-btn" id="rescue-rover">
+      🛠️ RESCUE THE ROVER
+      <small>Cost: 20 Energy, 5 Oxygen</small>
+      <small>Reward: 20 Research Points</small>
+    </button>
+
+    <button class="challenge-btn" id="collect-ice">
+      🧊 COLLECT ICE SAMPLES
+      <small>Cost: 10 Energy, 3 Oxygen</small>
+      <small>Reward: 15 Research Points</small>
+    </button>
+  </div>
+
+  <div id="challenge-result">
+    Choose your mission strategy, Commander.
+  </div>
+</section>
+
+<section class="achievement-panel">
+  <h2>🏆 MISSION ACHIEVEMENTS</h2>
+  <p id="achievement-progress">Achievements unlocked: 0 / 4</p>
+
+  <div id="achievement-list">
+    <div class="achievement locked" id="badge-first">
+      🔭 First Discovery — Locked
+    </div>
+
+    <div class="achievement locked" id="badge-explorer">
+      🧭 Mars Explorer — Locked
+    </div>
+
+    <div class="achievement locked" id="badge-hero">
+      🛠️ Mission Hero — Locked
+    </div>
+
+    <div class="achievement locked" id="badge-scientist">
+      🧪 Junior Scientist — Locked
+    </div>
+  </div>
+</section>
+
+
+
+
+      <!-- ACTIONS -->
+      <div class="section-heading">
+        <h3>COMMAND CENTER</h3>
+        <span class="small-note">CHOOSE ONE ACTION</span>
+      </div>
+
+      <div class="action-grid">
+
+        <button class="action-card" data-action="shield">
+          <span>🛡️</span>
+          <strong>Reinforce shelter</strong>
+          <small>Improve radiation protection</small>
+          <em>Cost: 15 Energy</em>
+        </button>
+
+        <button class="action-card" data-action="farm">
+          <span>🌱</span>
+          <strong>Grow food</strong>
+          <small>Produce additional food</small>
+          <em>Cost: 12 Energy, 8 Water</em>
+        </button>
+
+        <button class="action-card" data-action="water">
+          <span>💧</span>
+          <strong>Recycle water</strong>
+          <small>Recover water supplies</small>
+          <em>Cost: 15 Energy</em>
+        </button>
+
+        <button class="action-card" data-action="oxygen">
+          <span>🫁</span>
+          <strong>Produce oxygen</strong>
+          <small>Restore breathable air</small>
+          <em>Cost: 20 Energy, 5 Water</em>
+        </button>
+
+        <button class="action-card" data-action="repair">
+          <span>🔧</span>
+          <strong>Repair equipment</strong>
+          <small>Improve colony systems</small>
+          <em>Cost: 15 Energy</em>
+        </button>
+
+        <button class="action-card" data-action="research">
+          <span>🔬</span>
+          <strong>Scientific research</strong>
+          <small>Discover new knowledge</small>
+          <em>Cost: 18 Energy</em>
+        </button>
+
+        <button class="action-card" data-action="rest">
+          <span>🧑‍🚀</span>
+          <strong>Crew recovery</strong>
+          <small>Improve astronaut health</small>
+          <em>Cost: 8 Food</em>
+        </button>
+
+        <button class="action-card" data-action="explore">
+          <span>🛰️</span>
+          <strong>Explore Mars</strong>
+          <small>Search for useful resources</small>
+          <em>Cost: 15 Energy, 5 Food</em>
+        </button>
+
+      </div>
+
+      <button id="nextDayBtn" class="primary-btn next-day-btn">
+        END SOL · ADVANCE TO NEXT DAY →
+      </button>
+
+      <div class="message-box" id="messageBox">
+        Your decisions determine the future of this colony.
+      </div>
+
+      <!-- RESEARCH SCORE -->
+      <div class="score-card">
+        <div>
+          <span class="eyebrow">SCIENTIFIC DISCOVERIES</span>
+          <h3 id="researchPoints">0</h3>
+          <small>RESEARCH POINTS</small>
+        </div>
+        <span class="score-icon">🏆</span>
+      </div>
+
+      <!-- MISSION LOG -->
+      <div class="section-heading">
+        <h3>MISSION LOG</h3>
+      </div>
+      <div id="missionLog" class="mission-log">
+        <p>Mission initialized. Awaiting commander decisions.</p>
+      </div>
+
+      <button id="restartBtn" class="secondary-btn">
+        RESTART MISSION
+      </button>
+
+    </section>
+
+    <!-- END SCREEN -->
+    <section id="resultScreen" class="result-screen hidden">
+      <div class="result-icon" id="resultIcon">🏆</div>
+      <p class="eyebrow">MISSION DEBRIEFING</p>
+      <h1 id="resultTitle">MISSION COMPLETE</h1>
+      <p id="resultText"></p>
+
+      <div class="final-score">
+        <span>FINAL SCORE</span>
+        <strong id="finalScore">0</strong>
+      </div>
+
+      <div id="lessonsLearned" class="lessons-card">
+        <h3>WHAT YOU LEARNED</h3>
+        <p>Every resource matters in space exploration.</p>
+      </div>
+      <div id="mission-certificate" class="certificate">
+    <h2>🏅 MARS COLONY SURVIVOR</h2>
+    <p>Certificate of Achievement</p>
+
+    <h3 id="certificate-name">Explorer</h3>
+
+    <p>
+        Successfully completed the
+        30-Sol Mars Survival Mission.
+    </p>
+
+    <strong>MISSION COMMANDER</strong>
+    <p>Red Planet Mission Control</p>
+</div>
+
+<button onclick="printCertificate()">
+    🖨️ PRINT CERTIFICATE
+</button>
+
+      <button id="playAgainBtn" class="primary-btn">
+        PLAY AGAIN ↻
+      </button>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>MISSION: RED PLANET</p>
+    <small>Educational space-survival simulation. Not an official NASA product.</small>
+    <small>Game mechanics use illustrative values, not real-time mission telemetry.</small>
+  </footer>
+
+  <audio id="success-sound" src="https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg"></audio>
+
+<audio id="alert-sound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+<div id="launch-countdown" class="launch-countdown hidden">
+    <h1 id="countdown-number">3</h1>
+    <p>🚀 PREPARING FOR MARS LAUNCH</p>
+</div>
+<audio
+    id="launch-sound"
+    src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"
+    preload="auto">
+</audio>
+<script src="game.js"></script>
+</body>
+</html>
